@@ -16,29 +16,42 @@ namespace HourTrackerBackend.Helpers
 
         internal object FirstLoadData(string username)
         {
-            var context = new TrackerContext();
-            var user = context.Users.FirstOrDefault(x=> x.UserName!.ToLower() == username.ToLower());
+            using var context = new TrackerContext();
+            var user = context.Users.AsNoTracking().FirstOrDefault(x => x.UserName!.ToLower() == username.ToLower());
 
+            // AsNoTracking + separate queries so each graph has its own instances,
+            // then null the deep back-reference so System.Text.Json can't walk Project↔Mechanic forever.
             var projects = context.Projects
-            .Include(p => p.Links).ThenInclude(l => l.Mechanic)
-            .Include(p => p.Links).ThenInclude(l => ((ProjectMecanicLink)l).WeekData)
-            .Include(p => p.Todos)
-            .Include(p => p.Common).ThenInclude(c => c.Comments)
-            .ToList();
+                .AsNoTracking()
+                .Include(p => p.Links).ThenInclude(l => l.Mechanic)
+                .Include(p => p.Links).ThenInclude(l => l.WeekData)
+                .Include(p => p.Todos)
+                .Include(p => p.Common).ThenInclude(c => c.Comments)
+                .ToList();
+
+            foreach (var p in projects)
+                foreach (var l in p.Links)
+                    if (l.Mechanic != null)
+                        l.Mechanic.Links = new List<ProjectMecanicLink>();
 
             var mechanics = context.Mechanics
-            .Include(p => p.Links).ThenInclude(l => l.Project)
-            .Include(p => p.Links).ThenInclude(l => ((ProjectMecanicLink)l).WeekData)
-            .Include(m => m.Common).ThenInclude(c => c.Comments)
-            .ToList();
+                .AsNoTracking()
+                .Include(m => m.Links).ThenInclude(l => l.Project)
+                .Include(m => m.Links).ThenInclude(l => l.WeekData)
+                .Include(m => m.Common).ThenInclude(c => c.Comments)
+                .ToList();
 
-            var data = new
+            foreach (var m in mechanics)
+                foreach (var l in m.Links)
+                    if (l.Project != null)
+                        l.Project.Links = new List<ProjectMecanicLink>();
+
+            return new
             {
-                user = user,
-                projects = projects,
-                mechanics = mechanics
+                user,
+                projects,
+                mechanics
             };
-            return data;
         }
     }
 }
