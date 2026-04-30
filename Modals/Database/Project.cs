@@ -9,6 +9,7 @@ namespace HourTrackerBackend.Modals.Database
         public string Name { get; set; } = null!;
         public List<ProjectMecanicLink> Links { get; set; } = new List<ProjectMecanicLink>();
         public List<Todo> Todos { get; set; } = new List<Todo>();
+        public List<ProjectType> Types { get; set; } = new List<ProjectType>();
         public string About { get; set; } = null!;
         public double EstimatedTimeInSeconds { get; set; }
         public int CommonId { get; set; }

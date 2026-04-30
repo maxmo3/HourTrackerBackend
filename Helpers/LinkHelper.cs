@@ -58,19 +58,13 @@ namespace HourTrackerBackend.Helpers
             {
                 throw new Exception("Link not found");
             }
-            var weekData = link.WeekData.FirstOrDefault(w => w.WeekNumber == week && w.Year == msg.Year);
-            if (weekData != null)
-            {
-                throw new Exception("Week data already exists");
-            }
-
-
-            weekData = new WeekData
+            var weekData = new WeekData
             {
                 WeekNumber = week,
                 Year = msg.Year,
                 SecondsWorked = msg.SecondsWorked,
                 Weight = msg.Weight,
+                ProjectTypeId = msg.ProjectTypeId,
                 Created = DateTime.UtcNow
             };
 
@@ -88,6 +82,7 @@ namespace HourTrackerBackend.Helpers
 
             weekData.Weight = msg.Weight;
             weekData.SecondsWorked = msg.SecondsWorked;
+            weekData.ProjectTypeId = msg.ProjectTypeId;
             _context.SaveChanges();
         }
 

@@ -29,5 +29,6 @@ namespace HourTrackerBackend.Modals
         public DbSet<Common> Commons { get; set; }
         public DbSet<WeekData> WeekData { get; set; }
         public DbSet<ProjectMecanicLink> ProjectMecanicLinks { get; set; }
+        public DbSet<ProjectType> ProjectTypes { get; set; }
     }
 }

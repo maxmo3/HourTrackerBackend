@@ -27,6 +27,7 @@ namespace HourTrackerBackend.Helpers
                 .Include(p => p.Links).ThenInclude(l => l.WeekData)
                 .Include(p => p.Todos)
                 .Include(p => p.Common).ThenInclude(c => c.Comments)
+                .Include(p => p.Types)
                 .ToList();
 
             foreach (var p in projects)

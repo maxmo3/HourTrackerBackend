@@ -39,6 +39,21 @@ namespace HourTrackerBackend.Helpers
             };
             _context.Projects.Add(newProject);
             _context.SaveChanges();
+
+            if (project.Types != null)
+            {
+                foreach (var typeName in project.Types.Where(n => !string.IsNullOrWhiteSpace(n)))
+                {
+                    _context.ProjectTypes.Add(new ProjectType
+                    {
+                        Name = typeName.Trim(),
+                        ProjectId = newProject.Id,
+                        Created = DateTime.UtcNow
+                    });
+                }
+                _context.SaveChanges();
+            }
+
             return newProject;
         }
 
@@ -93,6 +108,30 @@ namespace HourTrackerBackend.Helpers
             {
                 throw new Exception("Mechanic already exists");
             }
+        }
+
+        internal ProjectType AddProjectType(int projectId, ProjectTypeMessage msg)
+        {
+            var project = _context.Projects.Find(projectId);
+            if (project == null) throw new Exception("Project not found");
+
+            var type = new ProjectType
+            {
+                Name = msg.Name,
+                ProjectId = projectId,
+                Created = DateTime.UtcNow
+            };
+            _context.ProjectTypes.Add(type);
+            _context.SaveChanges();
+            return type;
+        }
+
+        internal void RemoveProjectType(int projectId, int typeId)
+        {
+            var type = _context.ProjectTypes.FirstOrDefault(t => t.Id == typeId && t.ProjectId == projectId);
+            if (type == null) throw new Exception("Project type not found");
+            _context.ProjectTypes.Remove(type);
+            _context.SaveChanges();
         }
 
         internal void UpdateExtras(int id, ProjectExtrasMessage msg)
