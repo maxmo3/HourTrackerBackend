@@ -14,8 +14,9 @@ namespace HourTrackerBackend.Helpers
             this.signInManager = signInManager;
         }
 
-        internal async Task<User> CreateUser(string username, string password)
+        internal async Task<User> CreateUser(string username, string password, string? registrationCode)
         {
+            if (registrationCode != "4338") throw new Exception("InvalidCode");
             if (username == null || password == null) throw new Exception("BadRequest");
             var u = await userManager.FindByNameAsync(username.ToLower());
             if (u != null) throw new Exception("Duplicate");

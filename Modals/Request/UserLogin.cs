@@ -7,7 +7,8 @@ namespace HourTrackerBackend.Modals.Request
 {
     public class UserLogin
     {
-        public required string username { get; set; } 
+        public required string username { get; set; }
         public required string password { get; set; }
+        public string? registrationCode { get; set; }
     }
 }

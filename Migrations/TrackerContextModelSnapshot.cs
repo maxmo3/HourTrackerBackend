@@ -118,6 +118,9 @@ namespace HourTrackerBackend.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CreatedByUserName")
+                        .HasColumnType("text");
+
                     b.Property<int>("DhzSeconds")
                         .HasColumnType("integer");
 
@@ -207,6 +210,9 @@ namespace HourTrackerBackend.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()

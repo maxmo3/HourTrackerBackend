@@ -15,6 +15,7 @@ namespace HourTrackerBackend.Modals.Database
         [ForeignKey("CommonId")]
         public Common Common { get; set; } = new Common();
         public DateTime Created { get; set; }
+        public string? CreatedByUserName { get; set; }
         public bool MaterialsDelivered { get; set; }
 
         // Extra work approved by customer — billable, excluded from budget comparison

@@ -4,6 +4,7 @@ using HourTrackerBackend.Helpers;
 using HourTrackerBackend.Modals;
 using HourTrackerBackend.Modals.Database;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -81,6 +82,12 @@ builder.Services.AddScoped<ProjectHelper>();
 builder.Services.AddScoped<TodoHelper>();
 builder.Services.AddScoped<GeneralHelper>();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.Requirements.Add(new AdminRequirement()));
+});
+builder.Services.AddScoped<IAuthorizationHandler, AdminAuthorizationHandler>();
+
 
 var app = builder.Build();
 
@@ -142,7 +149,21 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.ExecuteSqlRaw("""
         ALTER TABLE "Projects" ADD COLUMN IF NOT EXISTS "MeerwerkSeconds" integer NOT NULL DEFAULT 0;
         ALTER TABLE "Projects" ADD COLUMN IF NOT EXISTS "DhzSeconds" integer NOT NULL DEFAULT 0;
+        ALTER TABLE "AspNetUsers" ADD COLUMN IF NOT EXISTS "IsAdmin" boolean NOT NULL DEFAULT false;
+        ALTER TABLE "Projects" ADD COLUMN IF NOT EXISTS "CreatedByUserName" text NULL;
         """);
+
+    // Seed admin users — these usernames always get IsAdmin=true on startup.
+    var adminUsernames = new[] { "timo" };
+    foreach (var adminName in adminUsernames)
+    {
+        var adminUser = dbContext.Users.FirstOrDefault(u => u.UserName == adminName);
+        if (adminUser != null && !adminUser.IsAdmin)
+        {
+            adminUser.IsAdmin = true;
+            dbContext.SaveChanges();
+        }
+    }
 }
 
 app.UseAuthorization();

@@ -48,13 +48,28 @@ namespace HourTrackerBackend.Controllers
         [HttpPost("create")]
         public async Task<ActionResult> Create([FromBody] UserLogin loginInfo)
         {
-            var authHelper = new AuthHelper(_userManager, _signInManager);
-            var user = await authHelper.CreateUser(loginInfo.username, loginInfo.password);
+            try
+            {
+                var authHelper = new AuthHelper(_userManager, _signInManager);
+                var user = await authHelper.CreateUser(loginInfo.username, loginInfo.password, loginInfo.registrationCode);
 
-            await authHelper.Login(loginInfo.username, loginInfo.password);
+                await authHelper.Login(loginInfo.username, loginInfo.password);
 
-            var helper = new GeneralHelper(_userManager);
-            return Ok(helper.FirstLoadData(user.UserName!));
+                var helper = new GeneralHelper(_userManager);
+                return Ok(helper.FirstLoadData(user.UserName!));
+            }
+            catch (Exception ex) when (ex.Message == "InvalidCode")
+            {
+                return BadRequest("InvalidCode");
+            }
+            catch (Exception ex) when (ex.Message == "Duplicate")
+            {
+                return Conflict("Duplicate");
+            }
+            catch
+            {
+                return BadRequest("BadRequest");
+            }
         }
     }
 }

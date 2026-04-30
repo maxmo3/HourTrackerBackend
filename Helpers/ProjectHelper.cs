@@ -32,6 +32,7 @@ namespace HourTrackerBackend.Helpers
                 Name = project.Name,
                 About = project.About,
                 Created = System.DateTime.UtcNow,
+                CreatedByUserName = _username,
                 Common = new Common(),
                 EstimatedTimeInSeconds = project.EstimatedTimeInSeconds,
                 MaterialsDelivered = project.MaterialsDelivered,
