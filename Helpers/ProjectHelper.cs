@@ -42,13 +42,14 @@ namespace HourTrackerBackend.Helpers
 
             if (project.Types != null)
             {
-                foreach (var typeName in project.Types.Where(n => !string.IsNullOrWhiteSpace(n)))
+                foreach (var typeMsg in project.Types.Where(n => !string.IsNullOrWhiteSpace(n.Name)))
                 {
                     _context.ProjectTypes.Add(new ProjectType
                     {
-                        Name = typeName.Trim(),
+                        Name = typeMsg.Name.Trim(),
                         ProjectId = newProject.Id,
-                        Created = DateTime.UtcNow
+                        Created = DateTime.UtcNow,
+                        CalculatedTimeInSeconds = typeMsg.CalculatedTimeInSeconds
                     });
                 }
                 _context.SaveChanges();
@@ -119,11 +120,20 @@ namespace HourTrackerBackend.Helpers
             {
                 Name = msg.Name,
                 ProjectId = projectId,
-                Created = DateTime.UtcNow
+                Created = DateTime.UtcNow,
+                CalculatedTimeInSeconds = msg.CalculatedTimeInSeconds
             };
             _context.ProjectTypes.Add(type);
             _context.SaveChanges();
             return type;
+        }
+
+        internal void UpdateProjectType(int projectId, int typeId, ProjectTypeMessage msg)
+        {
+            var type = _context.ProjectTypes.FirstOrDefault(t => t.Id == typeId && t.ProjectId == projectId);
+            if (type == null) throw new Exception("Project type not found");
+            type.CalculatedTimeInSeconds = msg.CalculatedTimeInSeconds;
+            _context.SaveChanges();
         }
 
         internal void RemoveProjectType(int projectId, int typeId)

@@ -10,4 +10,5 @@ public class ProjectType
     [ForeignKey("ProjectId")]
     public Project Project { get; set; } = null!;
     public DateTime Created { get; set; }
+    public double CalculatedTimeInSeconds { get; set; } = 0;
 }

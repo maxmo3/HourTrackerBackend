@@ -13,7 +13,11 @@
       "Bash(dotnet package search:*)",
       "Bash(git pull *)",
       "Bash(git push *)",
-      "Bash(git stash *)"
+      "Bash(git stash *)",
+      "Bash(git commit *)",
+      "Bash(cat .git/MERGE_MSG)",
+      "Bash(cat .git/COMMIT_EDITMSG)",
+      "Bash(git add *)"
     ],
     "deny": [],
     "ask": []

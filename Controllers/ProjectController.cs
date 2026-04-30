@@ -45,6 +45,12 @@ namespace HourTrackerBackend.Controllers
         public ActionResult PostType(int projectId, [FromBody] ProjectTypeMessage msg) =>
             Ok(_projectHelper.AddProjectType(projectId, msg));
 
+        [HttpPut("{projectId}/types/{typeId}")]
+        public ActionResult PutType(int projectId, int typeId, [FromBody] ProjectTypeMessage msg) {
+            _projectHelper.UpdateProjectType(projectId, typeId, msg);
+            return Ok();
+        }
+
         [HttpDelete("{projectId}/types/{typeId}")]
         public ActionResult DeleteType(int projectId, int typeId) {
             _projectHelper.RemoveProjectType(projectId, typeId);
