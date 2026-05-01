@@ -2,5 +2,6 @@
 /.vscode
 /bin
 /obj
-/Properties
+/Properties/*
+!/Properties/launchSettings.json
 start.sh
