@@ -158,6 +158,7 @@ using (var scope = app.Services.CreateScope())
             "Created" timestamptz NOT NULL
         );
         CREATE INDEX IF NOT EXISTS "IX_ProjectTypes_ProjectId" ON "ProjectTypes" ("ProjectId");
+        ALTER TABLE "ProjectTypes" ADD COLUMN IF NOT EXISTS "CalculatedTimeInSeconds" double precision NOT NULL DEFAULT 0;
         ALTER TABLE "WeekData" ADD COLUMN IF NOT EXISTS "ProjectTypeId" integer NULL;
         """);
 
