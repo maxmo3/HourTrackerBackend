@@ -161,6 +161,9 @@ namespace HourTrackerBackend.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("ProjectTypeId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("WeekDataId")
                         .HasColumnType("integer");
 

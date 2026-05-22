@@ -17,8 +17,8 @@ namespace HourTrackerBackend.Controllers
         }
 
         [HttpPost("{projectId}/{mechanicId}")]
-        public ActionResult Post(int projectId, int mechanicId) {
-            _linkHelper.AddLink(projectId, mechanicId);
+        public ActionResult Post(int projectId, int mechanicId, [FromQuery] int? typeId = null) {
+            _linkHelper.AddLink(projectId, mechanicId, typeId);
             return Ok();
         }
 

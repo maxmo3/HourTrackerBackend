@@ -18,5 +18,7 @@ public class ProjectMecanicLink
     public List<WeekData> WeekData { get; set; } = new List<WeekData>();
     public int WeekDataId { get; set; }
 
+    public int? ProjectTypeId { get; set; }
+
     public DateTime Created { get; set; }
 }

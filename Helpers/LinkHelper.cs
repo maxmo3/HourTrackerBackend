@@ -27,19 +27,20 @@ namespace HourTrackerBackend.Helpers
             _context.SaveChanges();
         }
 
-        public void AddLink(int projectId, int mechanicId)
+        public void AddLink(int projectId, int mechanicId, int? typeId = null)
         {
             var project = _context.Projects.Include(p => p.Links).FirstOrDefault(p => p.Id == projectId);
 
             if (project == null) throw new Exception("Project not found");
 
-            var link = project.Links.FirstOrDefault(l => l.MechanicId == mechanicId);
+            var link = project.Links.FirstOrDefault(l => l.MechanicId == mechanicId && l.ProjectTypeId == typeId);
             if (link != null) throw new Exception("Link already exists");
 
             project.Links.Add(new ProjectMecanicLink
             {
                 ProjectId = projectId,
                 MechanicId = mechanicId,
+                ProjectTypeId = typeId,
                 Created = DateTime.UtcNow
             });
 
