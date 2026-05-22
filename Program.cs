@@ -146,21 +146,29 @@ using (var scope = app.Services.CreateScope())
 
     // Idempotent column guard — runs even if Migrate() failed or was already applied.
     // ADD COLUMN IF NOT EXISTS is a no-op when the column already exists.
-    dbContext.Database.ExecuteSqlRaw("""
-        ALTER TABLE "Projects" ADD COLUMN IF NOT EXISTS "MeerwerkSeconds" integer NOT NULL DEFAULT 0;
-        ALTER TABLE "Projects" ADD COLUMN IF NOT EXISTS "DhzSeconds" integer NOT NULL DEFAULT 0;
-        ALTER TABLE "AspNetUsers" ADD COLUMN IF NOT EXISTS "IsAdmin" boolean NOT NULL DEFAULT false;
-        ALTER TABLE "Projects" ADD COLUMN IF NOT EXISTS "CreatedByUserName" text NULL;
-        CREATE TABLE IF NOT EXISTS "ProjectTypes" (
-            "Id" serial NOT NULL CONSTRAINT "PK_ProjectTypes" PRIMARY KEY,
-            "Name" text NOT NULL,
-            "ProjectId" integer NOT NULL REFERENCES "Projects"("Id") ON DELETE CASCADE,
-            "Created" timestamptz NOT NULL
-        );
-        CREATE INDEX IF NOT EXISTS "IX_ProjectTypes_ProjectId" ON "ProjectTypes" ("ProjectId");
-        ALTER TABLE "ProjectTypes" ADD COLUMN IF NOT EXISTS "CalculatedTimeInSeconds" double precision NOT NULL DEFAULT 0;
-        ALTER TABLE "WeekData" ADD COLUMN IF NOT EXISTS "ProjectTypeId" integer NULL;
-        """);
+    try
+    {
+        dbContext.Database.ExecuteSqlRaw("""
+            ALTER TABLE "Projects" ADD COLUMN IF NOT EXISTS "MeerwerkSeconds" integer NOT NULL DEFAULT 0;
+            ALTER TABLE "Projects" ADD COLUMN IF NOT EXISTS "DhzSeconds" integer NOT NULL DEFAULT 0;
+            ALTER TABLE "AspNetUsers" ADD COLUMN IF NOT EXISTS "IsAdmin" boolean NOT NULL DEFAULT false;
+            ALTER TABLE "Projects" ADD COLUMN IF NOT EXISTS "CreatedByUserName" text NULL;
+            CREATE TABLE IF NOT EXISTS "ProjectTypes" (
+                "Id" serial NOT NULL CONSTRAINT "PK_ProjectTypes" PRIMARY KEY,
+                "Name" text NOT NULL,
+                "ProjectId" integer NOT NULL REFERENCES "Projects"("Id") ON DELETE CASCADE,
+                "Created" timestamptz NOT NULL
+            );
+            CREATE INDEX IF NOT EXISTS "IX_ProjectTypes_ProjectId" ON "ProjectTypes" ("ProjectId");
+            ALTER TABLE "ProjectTypes" ADD COLUMN IF NOT EXISTS "CalculatedTimeInSeconds" double precision NOT NULL DEFAULT 0;
+            ALTER TABLE "WeekData" ADD COLUMN IF NOT EXISTS "ProjectTypeId" integer NULL;
+            ALTER TABLE "ProjectMecanicLinks" ADD COLUMN IF NOT EXISTS "ProjectTypeId" integer NULL;
+            """);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[STARTUP] Schema guard failed (non-fatal): {ex.Message}");
+    }
 
     // Seed admin users — these usernames always get IsAdmin=true on startup.
     var adminUsernames = new[] { "timo" };
