@@ -36,7 +36,6 @@ namespace HourTrackerBackend.Helpers
                 Common = new Common(),
                 EstimatedTimeInSeconds = project.EstimatedTimeInSeconds,
                 MaterialsDelivered = project.MaterialsDelivered,
-                Notes = project.Notes,
             };
             _context.Projects.Add(newProject);
             _context.SaveChanges();
@@ -85,7 +84,6 @@ namespace HourTrackerBackend.Helpers
             dbProject.About = project.About;
             dbProject.EstimatedTimeInSeconds = project.EstimatedTimeInSeconds;
             dbProject.MaterialsDelivered = project.MaterialsDelivered;
-            dbProject.Notes = project.Notes;
             _context.Projects.Update(dbProject);
             _context.SaveChanges();
             return dbProject;
@@ -153,6 +151,39 @@ namespace HourTrackerBackend.Helpers
 
             project.MeerwerkSeconds = msg.MeerwerkSeconds;
             project.DhzSeconds = msg.DhzSeconds;
+            _context.SaveChanges();
+        }
+
+        internal ProjectNote AddNote(int projectId, ProjectNoteMessage msg)
+        {
+            var project = _context.Projects.Find(projectId);
+            if (project == null) throw new Exception("Project not found");
+            var note = new ProjectNote
+            {
+                ProjectId = projectId,
+                Content = msg.Content,
+                Created = DateTime.UtcNow,
+            };
+            _context.ProjectNotes.Add(note);
+            _context.SaveChanges();
+            return note;
+        }
+
+        internal ProjectNote UpdateNote(int projectId, int noteId, ProjectNoteMessage msg)
+        {
+            var note = _context.ProjectNotes.FirstOrDefault(n => n.Id == noteId && n.ProjectId == projectId);
+            if (note == null) throw new Exception("Note not found");
+            note.Content = msg.Content;
+            note.UpdatedAt = DateTime.UtcNow;
+            _context.SaveChanges();
+            return note;
+        }
+
+        internal void DeleteNote(int projectId, int noteId)
+        {
+            var note = _context.ProjectNotes.FirstOrDefault(n => n.Id == noteId && n.ProjectId == projectId);
+            if (note == null) throw new Exception("Note not found");
+            _context.ProjectNotes.Remove(note);
             _context.SaveChanges();
         }
 

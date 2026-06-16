@@ -56,5 +56,19 @@ namespace HourTrackerBackend.Controllers
             _projectHelper.RemoveProjectType(projectId, typeId);
             return Ok();
         }
+
+        [HttpPost("{projectId}/notes")]
+        public ActionResult PostNote(int projectId, [FromBody] ProjectNoteMessage msg) =>
+            Ok(_projectHelper.AddNote(projectId, msg));
+
+        [HttpPut("{projectId}/notes/{noteId}")]
+        public ActionResult PutNote(int projectId, int noteId, [FromBody] ProjectNoteMessage msg) =>
+            Ok(_projectHelper.UpdateNote(projectId, noteId, msg));
+
+        [HttpDelete("{projectId}/notes/{noteId}")]
+        public ActionResult DeleteNote(int projectId, int noteId) {
+            _projectHelper.DeleteNote(projectId, noteId);
+            return Ok();
+        }
     }
 }

@@ -6,7 +6,6 @@ namespace HourTrackerBackend.Modals.Request
         public string About { get; set; } = null!;
         public double EstimatedTimeInSeconds { get; set; } = 0;
         public bool MaterialsDelivered { get; set; }
-        public string? Notes { get; set; }
         public List<ProjectTypeMessage>? Types { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace HourTrackerBackend.Modals.Database
         public DateTime Created { get; set; }
         public string? CreatedByUserName { get; set; }
         public bool MaterialsDelivered { get; set; }
-        public string? Notes { get; set; }
+        public List<ProjectNote> Notes { get; set; } = new List<ProjectNote>();
 
         // Extra work approved by customer — billable, excluded from budget comparison
         public int MeerwerkSeconds { get; set; } = 0;

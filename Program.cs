@@ -163,7 +163,14 @@ using (var scope = app.Services.CreateScope())
             ALTER TABLE "ProjectTypes" ADD COLUMN IF NOT EXISTS "CalculatedTimeInSeconds" double precision NOT NULL DEFAULT 0;
             ALTER TABLE "WeekData" ADD COLUMN IF NOT EXISTS "ProjectTypeId" integer NULL;
             ALTER TABLE "ProjectMecanicLinks" ADD COLUMN IF NOT EXISTS "ProjectTypeId" integer NULL;
-            ALTER TABLE "Projects" ADD COLUMN IF NOT EXISTS "Notes" text NULL;
+            CREATE TABLE IF NOT EXISTS "ProjectNotes" (
+                "Id" serial NOT NULL CONSTRAINT "PK_ProjectNotes" PRIMARY KEY,
+                "ProjectId" integer NOT NULL REFERENCES "Projects"("Id") ON DELETE CASCADE,
+                "Content" text NOT NULL,
+                "Created" timestamptz NOT NULL,
+                "UpdatedAt" timestamptz NULL
+            );
+            CREATE INDEX IF NOT EXISTS "IX_ProjectNotes_ProjectId" ON "ProjectNotes" ("ProjectId");
             """);
     }
     catch (Exception ex)
