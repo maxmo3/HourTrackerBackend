@@ -163,6 +163,7 @@ using (var scope = app.Services.CreateScope())
             ALTER TABLE "ProjectTypes" ADD COLUMN IF NOT EXISTS "CalculatedTimeInSeconds" double precision NOT NULL DEFAULT 0;
             ALTER TABLE "WeekData" ADD COLUMN IF NOT EXISTS "ProjectTypeId" integer NULL;
             ALTER TABLE "ProjectMecanicLinks" ADD COLUMN IF NOT EXISTS "ProjectTypeId" integer NULL;
+            ALTER TABLE "Projects" ADD COLUMN IF NOT EXISTS "Notes" text NULL;
             """);
     }
     catch (Exception ex)
