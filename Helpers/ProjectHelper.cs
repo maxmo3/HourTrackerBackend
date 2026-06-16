@@ -36,6 +36,7 @@ namespace HourTrackerBackend.Helpers
                 Common = new Common(),
                 EstimatedTimeInSeconds = project.EstimatedTimeInSeconds,
                 MaterialsDelivered = project.MaterialsDelivered,
+                Notes = project.Notes,
             };
             _context.Projects.Add(newProject);
             _context.SaveChanges();
@@ -84,6 +85,7 @@ namespace HourTrackerBackend.Helpers
             dbProject.About = project.About;
             dbProject.EstimatedTimeInSeconds = project.EstimatedTimeInSeconds;
             dbProject.MaterialsDelivered = project.MaterialsDelivered;
+            dbProject.Notes = project.Notes;
             _context.Projects.Update(dbProject);
             _context.SaveChanges();
             return dbProject;
